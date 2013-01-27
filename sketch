@@ -63,7 +63,7 @@ class Sketch
 
   def create_file(file)
     if File.exist? file[:path]
-      Steps << [:complete, 'SketchError', "The file #{file[:path]} already exists."]
+      @steps << [:complete, 'SketchError', "The file #{file[:path]} already exists."]
     else
       File.open(file[:path], 'w') { |f| f.write file[:contents] }
     end
