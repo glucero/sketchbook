@@ -21,6 +21,5 @@ launching a sketch
 
 <a href="https://github.com/glucero/sketchbook/blob/master/plasma/src/plasma/core.clj">
 <img src="https://raw.github.com/glucero/sketchbook/master/images/plasma.gif" /></a>
-
 <a href="https://github.com/glucero/sketchbook/blob/master/bouncing_ball/src/bouncing_ball/core.clj">
 <img src="https://raw.github.com/glucero/sketchbook/master/images/bouncing_ball.gif" /></a>
