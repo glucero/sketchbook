@@ -24,7 +24,7 @@ class Sketch
 
   def core_file
     [].tap do |file|
-      file << "(ns #{ProjectName.tr('_', '_')}.core"
+      file << "(ns #{ProjectName.tr('_', '-')}.core"
       file << '  (:use quil.core))'
       file << ''
       file << '(def window {:width, 256, :height, 256})'
