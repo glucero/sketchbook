@@ -12,43 +12,41 @@ class Sketch
           CoreFilename = File.join(CoreDir, 'core.clj')
 
   def project_file
-    [].tap do |file|
-      file << "(defproject #{ProjectName.tr('_', '-')} \"0.1.0\""
-      file << "  :description \"#{ProjectName.tr('_', ' ')}\""
-      file << '  :dependencies [ [org.clojure/clojure "1.4.0"],'
-      file << '                  [quil "1.6.0"] ]'
-      file << "  :main #{ProjectName.tr('_', '-')}.core)"
-      file << ''
-    end.join("\n")
+<<-FILE
+(defproject #{ProjectName.tr('_', '-')} "0.1.0"
+  :description "#{ProjectName.tr('_', ' ')}"
+  :dependencies [ [org.clojure/clojure "1.4.0"],
+                  [quil "1.6.0"] ]
+  :main #{ProjectName.tr('_', '-')}.core)
+FILE
   end
 
   def core_file
-    [].tap do |file|
-      file << "(ns #{ProjectName.tr('_', '-')}.core"
-      file << '  (:use quil.core))'
-      file << ''
-      file << '(def window {:width, 256, :height, 256})'
-      file << ''
-      file << '(def animation-frame (atom 0N))'
-      file << ''
-      file << '(defn draw []'
-      file << '  ;'
-      file << '  ; put code here'
-      file << '  ;'
-      file << '  (swap! animation-frame inc))'
-      file << ''
-      file << '(defn setup []'
-      file << '  (frame-rate 60)'
-      file << '  (background 0))'
-      file << ''
-      file << '(defn -main []'
-      file << "  (quil.core/defsketch #{ProjectName.tr('_', '-')}"
-      file << "    :title \"#{ProjectName.tr('_', ' ')}\""
-      file << '    :setup setup'
-      file << '    :draw  draw'
-      file << '    :size [(:width window) (:height window)]))'
-      file << ''
-    end.join("\n")
+<<-FILE
+(ns #{ProjectName.tr('_', '-')}.core
+  (:use quil.core))
+
+(def window {:width, 256, :height, 256})
+
+(def animation-frame (atom 0N))
+
+(defn draw []'
+  ;
+  ; put code here
+  ;
+  (swap! animation-frame inc))
+
+(defn setup []
+  (frame-rate 60)'
+  (background 0))'
+
+(defn -main []'
+  (quil.core/defsketch #{ProjectName.tr('_', '-')}
+    :title "#{ProjectName.tr('_', ' ')}"
+    :setup setup
+    :draw  draw
+    :size [(:width window) (:height window)]))
+FILE
   end
 
   def create_directory(directory)
