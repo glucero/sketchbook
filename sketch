@@ -1,0 +1,115 @@
+#!/usr/bin/ruby
+
+class Sketch
+
+  # directory hierarchy
+  ProjectName          = ARGV.join('_').downcase
+  SketchbookPath       = File.expand_path('.')
+    ProjectDir         = File.join(SketchbookPath, ProjectName)
+      ProjectFilename  = File.join(ProjectName, 'project.clj')
+      SourceDir        = File.join(ProjectName, 'src')
+        CoreDir        = File.join(SourceDir, ProjectName)
+          CoreFilename = File.join(CoreDir, 'core.clj')
+
+  def project_file
+    { :path => ProjectFilename,
+      :contents => [].tap do |file|
+        file << "(defproject #{ProjectName} \"0.1.0\""
+        file << "  :description \"#{ProjectName.split('_')}\""
+        file << '  :dependencies [ [org.clojure/clojure "1.4.0"],'
+        file << '                  [quil "1.6.0"] ]'
+        file << "  :main #{ProjectName}.core)"
+        file << ''
+      end.join("\n") }
+  end
+
+  def core_file
+    { :path => CoreFilename,
+      :contents => [].tap do |file|
+        file << '(ns plasma.core'
+        file << '  (:use quil.core))'
+        file << ''
+        file << '(def window {:width, 256, :height, 256})'
+        file << ''
+        file << '(def animation-frame (atom 0N))'
+        file << ''
+        file << '(defn draw []'
+        file << '  ;'
+        file << '  ; put code here'
+        file << '  ;'
+        file << '  (swap! animation-frame inc))'
+        file << ''
+        file << '(defn setup []'
+        file << '  (frame-rate 60)'
+        file << '  (background 0))'
+        file << ''
+        file << '(defn -main []'
+        file << "  (quil.core/defsketch #{ProjectName}"
+        file << "    :title \"#{ProjectName.split('_')}\""
+        file << '    :setup setup'
+        file << '    :draw  draw'
+        file << '    :size [(:width window) (:height window)]))'
+        file << ''
+      end.join("\n") }
+  end
+
+  def create_directory(directory)
+    if File.directory? directory
+      @steps << [:complete, 'SketchError', "The sketch '#{ProjectName}' already exists at '#{ProjectDir}'."]
+    else
+      Dir.mkdir directory
+    end
+  end
+
+  def create_file(file)
+    if File.exist? file[:path]
+      Steps << [:complete, 'SketchError', "The file #{file[:path]} already exists."]
+    else
+      File.open(file[:path], 'w') { |f| f.write file[:contents] }
+    end
+  end
+
+  def complete(*messages)
+    puts *messages
+
+    @steps.clear
+  end
+
+  def start
+    if ProjectName.empty?
+      @steps << [:complete, 'SketchError', 'Please enter a sketch name.']
+    end
+  end
+
+  def perform_next_action
+    send *@steps.pop if @steps.any?
+  rescue => error
+    @steps << [:complete, error.message, error.backtrace]
+  end
+
+  def done?
+    @steps.empty?
+  end
+
+  def initialize
+    @steps = [].tap do |steps|
+      steps << [:complete, "Sketch '#{ProjectName}' created."]
+      steps << [:create_file, core_file]
+      steps << [:create_file, project_file]
+      steps << [:create_directory, CoreDir]
+      steps << [:create_directory, SourceDir]
+      steps << [:create_directory, ProjectDir]
+      steps << [:start]
+    end
+
+    yield self
+  end
+end
+
+Sketch.new do |sketch|
+  until sketch.done?
+    sketch.perform_next_action
+  end
+end
+
+
