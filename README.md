@@ -9,10 +9,11 @@ requirements
 
 creating a sketch
 
-    sketch 'name'
+    ./sketch 'name'
 
 launching a sketch
 
+    cd ./sketch_name
     lein deps
     lein run
 

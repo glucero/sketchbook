@@ -3,7 +3,7 @@
 class Sketch
 
   # directory hierarchy
-  ProjectName          = ARGV.join('_').downcase
+  ProjectName          = ARGV.join('_').downcase.tr('-', '_')
   SketchbookPath       = File.expand_path('.')
     ProjectDir         = File.join(SketchbookPath, ProjectName)
       ProjectFilename  = File.join(ProjectName, 'project.clj')
@@ -12,19 +12,19 @@ class Sketch
           CoreFilename = File.join(CoreDir, 'core.clj')
 
   def project_file
-    [].tap do |f|
-      f << "(defproject #{ProjectName} \"0.1.0\""
-      f << "  :description \"#{ProjectName.split('_')}\""
-      f << '  :dependencies [ [org.clojure/clojure "1.4.0"],'
-      f << '                  [quil "1.6.0"] ]'
-      f << "  :main #{ProjectName}.core)"
-      f << ''
+    [].tap do |file|
+      file << "(defproject #{ProjectName.tr('_', '-')} \"0.1.0\""
+      file << "  :description \"#{ProjectName.tr('_', ' ')}\""
+      file << '  :dependencies [ [org.clojure/clojure "1.4.0"],'
+      file << '                  [quil "1.6.0"] ]'
+      file << "  :main #{ProjectName.tr('_', '-')}.core)"
+      file << ''
     end.join("\n")
   end
 
   def core_file
     [].tap do |file|
-      file << '(ns plasma.core'
+      file << "(ns #{ProjectName.tr('_', '_')}.core"
       file << '  (:use quil.core))'
       file << ''
       file << '(def window {:width, 256, :height, 256})'
@@ -42,8 +42,8 @@ class Sketch
       file << '  (background 0))'
       file << ''
       file << '(defn -main []'
-      file << "  (quil.core/defsketch #{ProjectName}"
-      file << "    :title \"#{ProjectName.split('_')}\""
+      file << "  (quil.core/defsketch #{ProjectName.tr('_', '-')}"
+      file << "    :title \"#{ProjectName.tr('_', ' ')}\""
       file << '    :setup setup'
       file << '    :draw  draw'
       file << '    :size [(:width window) (:height window)]))'
@@ -53,7 +53,7 @@ class Sketch
 
   def create_directory(directory)
     if File.directory? directory
-      @steps << [:complete, 'SketchError', "The directoy '#{directory}' already exists."]
+      @steps << [:complete, 'SketchbookError', "The directoy '#{directory}' already exists."]
     else
       Dir.mkdir directory
     end
@@ -61,7 +61,7 @@ class Sketch
 
   def create_file(path, contents)
     if File.exist? path
-      @steps << [:complete, 'SketchError', "The file #{path} already exists."]
+      @steps << [:complete, 'SketchbookError', "The file #{path} already exists."]
     else
       File.open(path, 'w') { |file| file.write contents }
     end
@@ -75,7 +75,7 @@ class Sketch
 
   def start
     if ProjectName.empty?
-      @steps << [:complete, 'SketchError', 'Please enter a sketch name.']
+      @steps << [:complete, 'SketchbookError', 'Please enter a sketch name.']
     end
   end
 
