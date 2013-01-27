@@ -12,45 +12,43 @@ class Sketch
           CoreFilename = File.join(CoreDir, 'core.clj')
 
   def project_file
-    { :path => ProjectFilename,
-      :contents => [].tap do |file|
-        file << "(defproject #{ProjectName} \"0.1.0\""
-        file << "  :description \"#{ProjectName.split('_')}\""
-        file << '  :dependencies [ [org.clojure/clojure "1.4.0"],'
-        file << '                  [quil "1.6.0"] ]'
-        file << "  :main #{ProjectName}.core)"
-        file << ''
-      end.join("\n") }
+    [].tap do |f|
+      f << "(defproject #{ProjectName} \"0.1.0\""
+      f << "  :description \"#{ProjectName.split('_')}\""
+      f << '  :dependencies [ [org.clojure/clojure "1.4.0"],'
+      f << '                  [quil "1.6.0"] ]'
+      f << "  :main #{ProjectName}.core)"
+      f << ''
+    end.join("\n")
   end
 
   def core_file
-    { :path => CoreFilename,
-      :contents => [].tap do |file|
-        file << '(ns plasma.core'
-        file << '  (:use quil.core))'
-        file << ''
-        file << '(def window {:width, 256, :height, 256})'
-        file << ''
-        file << '(def animation-frame (atom 0N))'
-        file << ''
-        file << '(defn draw []'
-        file << '  ;'
-        file << '  ; put code here'
-        file << '  ;'
-        file << '  (swap! animation-frame inc))'
-        file << ''
-        file << '(defn setup []'
-        file << '  (frame-rate 60)'
-        file << '  (background 0))'
-        file << ''
-        file << '(defn -main []'
-        file << "  (quil.core/defsketch #{ProjectName}"
-        file << "    :title \"#{ProjectName.split('_')}\""
-        file << '    :setup setup'
-        file << '    :draw  draw'
-        file << '    :size [(:width window) (:height window)]))'
-        file << ''
-      end.join("\n") }
+    [].tap do |file|
+      file << '(ns plasma.core'
+      file << '  (:use quil.core))'
+      file << ''
+      file << '(def window {:width, 256, :height, 256})'
+      file << ''
+      file << '(def animation-frame (atom 0N))'
+      file << ''
+      file << '(defn draw []'
+      file << '  ;'
+      file << '  ; put code here'
+      file << '  ;'
+      file << '  (swap! animation-frame inc))'
+      file << ''
+      file << '(defn setup []'
+      file << '  (frame-rate 60)'
+      file << '  (background 0))'
+      file << ''
+      file << '(defn -main []'
+      file << "  (quil.core/defsketch #{ProjectName}"
+      file << "    :title \"#{ProjectName.split('_')}\""
+      file << '    :setup setup'
+      file << '    :draw  draw'
+      file << '    :size [(:width window) (:height window)]))'
+      file << ''
+    end.join("\n")
   end
 
   def create_directory(directory)
@@ -61,11 +59,11 @@ class Sketch
     end
   end
 
-  def create_file(file)
-    if File.exist? file[:path]
-      @steps << [:complete, 'SketchError', "The file #{file[:path]} already exists."]
+  def create_file(path, contents)
+    if File.exist? path
+      @steps << [:complete, 'SketchError', "The file #{path} already exists."]
     else
-      File.open(file[:path], 'w') { |f| f.write file[:contents] }
+      File.open(path, 'w') { |file| file.write contents }
     end
   end
 
@@ -94,8 +92,8 @@ class Sketch
   def initialize
     @steps = [].tap do |steps|
       steps << [:complete, "Sketch '#{ProjectName}' created."]
-      steps << [:create_file, core_file]
-      steps << [:create_file, project_file]
+      steps << [:create_file, CoreFilename, core_file]
+      steps << [:create_file, ProjectFilename, project_file]
       steps << [:create_directory, CoreDir]
       steps << [:create_directory, SourceDir]
       steps << [:create_directory, ProjectDir]
