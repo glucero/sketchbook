@@ -55,7 +55,7 @@ class Sketch
 
   def create_directory(directory)
     if File.directory? directory
-      @steps << [:complete, 'SketchError', "The sketch '#{ProjectName}' already exists at '#{ProjectDir}'."]
+      @steps << [:complete, 'SketchError', "The directoy '#{directory}' already exists."]
     else
       Dir.mkdir directory
     end
