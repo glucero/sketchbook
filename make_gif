@@ -1,0 +1,31 @@
+#!/usr/bin/ruby
+
+# requires graphicsmagick
+#
+# create a frame atom in the quil project:
+#    (def animation-frame (atom 0N))
+#
+# save each animation frame:
+#    (save-frame (str "/tmp/project_name-" @animation-frame ".png"))
+#
+# increment the current frame:
+#    (swap! animation-frame inc)
+#
+
+if ARGV.count == 3
+  project = ARGV[0]
+  frames   = ARGV[1]
+  delay    = ARGV[2]
+
+  [].tap do |command|
+    command << 'gm convert -loop 100'
+    (1..frames).each { |i| command << "-delay #{delay} /tmp/#{project}-#{i}.png" }
+    command << "/tmp/#{project}.gif"
+
+    system command.join(' ')
+  end
+else
+  puts 'usage:', './make_gif project frames delay'
+end
+
+
