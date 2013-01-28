@@ -6,6 +6,14 @@
 (def position {:x (atom 128N) :y (atom 128N)}) ; start ball in the center
 (def velocity {:x (atom 4N) :y (atom 6N)})
 
+(def animation-frame (atom 0N))
+(defn next-animation-frame!
+  ([] (swap! animation-frame inc))
+  ([save]
+    (if (= save :save)
+      (save-frame (str "/tmp/bouncing_ball/" @animation-frame ".png")))
+    (swap! animation-frame inc)))
+
 (defn draw []
   (let [x-vel     @(:x velocity)
         y-vel     @(:y velocity)                 ; move the ball accoring to
@@ -24,7 +32,10 @@
     (if (or                                  ; (reversing its direction)
           (< y-pos 25)
           (> y-pos (- (:height window) 25)))
-      (swap! (:y velocity) * -1))))
+      (swap! (:y velocity) * -1)))
+
+  (next-animation-frame!))         ; advance animation frame without saving
+  ; (next-animation-frame! :save))   ; animate and save each frame to /tmp
 
 (defn setup []
   (frame-rate 60)

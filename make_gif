@@ -19,7 +19,7 @@ if ARGV.count == 3
 
   [].tap do |command|
     command << '/usr/local/Cellar/graphicsmagick/1.3.17/bin/gm convert -loop 100'
-    (1..frames).each { |i| command << "-delay #{delay} /tmp/#{project}-#{i}.png" }
+    (1..frames).each { |i| command << "-delay #{delay} /tmp/#{project}/#{i}.png" }
     command << "/tmp/#{project}.gif"
 
     system command.join(' ')

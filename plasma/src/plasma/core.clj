@@ -3,6 +3,14 @@
 
 (def window {:width, 256, :height, 256})
 
+(def animation-frame (atom 0N))
+(defn next-animation-frame!
+  ([] (swap! animation-frame inc))
+  ([save]
+    (if (= save :save)
+      (save-frame (str "/tmp/plasma/" @animation-frame ".png")))
+    (swap! animation-frame inc)))
+
 (def plasma-map
   (for [x (range (:width window)) ]
   (for [y (range (:height window))]
@@ -28,8 +36,6 @@
       (fn [v] (+ 128.0 (* 128.0 (Math/sin (* Math/PI (/ i v))))))
       (vector 32.0 64.0 128.0)))) ; [red green blue]
 
-(def animation-frame (atom 0N))
-
 (defn draw []
   (doseq [x (range (:width window))]  ; draw the monochome plasma map and
   (doseq [y (range (:height window))] ; use each pixel value as the index
@@ -38,8 +44,10 @@
           [r g b] (nth plasma-palette
                     (mod index 256))]
     (stroke r g b)
-    (point x y))))             ; increment the palette index offset every
-  (swap! animation-frame inc)) ; time we complete a draw loop
+    (point x y))))
+
+  (next-animation-frame!))         ; advance animation frame without saving
+  ; (next-animation-frame! :save))   ; animate and save each frame to /tmp
 
 (defn setup []
   (frame-rate 60)
