@@ -1,7 +1,7 @@
 (ns plasma.core
   (:use quil.core))
 
-(def window {:width, 256, :height, 256})
+(def window {:width 256 :height 256})
 
 (def animation-frame (atom 0N))
 (defn next-animation-frame!
