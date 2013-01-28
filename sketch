@@ -47,10 +47,10 @@ FILE
   ; (next-animation-frame! :save))   ; animate and save each frame to /tmp
 
 (defn setup []
-  (frame-rate 60)'
-  (background 0))'
+  (frame-rate 60)
+  (background 0))
 
-(defn -main []'
+(defn -main []
   (quil.core/defsketch #{ProjectName.tr('_', '-')}
     :title "#{ProjectName.tr('_', ' ')}"
     :setup setup

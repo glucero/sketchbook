@@ -16,7 +16,7 @@
 
 (defn draw []
   (let [x-vel     @(:x velocity)
-        y-vel     @(:y velocity)                 ; move the ball accoring to
+        y-vel     @(:y velocity)                 ; move the ball according to
         x-pos     (swap! (:x position) + x-vel)  ; its current (x,y) velocity
         y-pos     (swap! (:y position) + y-vel)] ; each draw loop
 
