@@ -1,15 +1,4 @@
-### Gino Lucero
-### Tessellated Penrose Tile Generator
-#
-# This will create a 1200px x 1200px penrose pattern of
-# blue and grey triangles of 36 and 108 degrees at their
-# apex.
-#
 # Example Output: http://i.imgur.com/7Mimi.jpg
-#
-# Requirements: Ruby 1.9.2 and the Cairo graphics gem.
-#
-### Source: http://github.com/glucero/penrose
 
 require 'cairo'
 require 'complex'
