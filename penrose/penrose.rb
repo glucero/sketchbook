@@ -1,5 +1,3 @@
-# output: http://i.imgur.com/7Mimi.jpg
-
 eval %{
                                   ['
                                 cairo',
